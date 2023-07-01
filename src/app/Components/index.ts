@@ -1,2 +1,3 @@
 export * from "./SearchInput";
-export * from "./ListContents";
+export * from "./ListContent";
+export * from "./LoaderContent";

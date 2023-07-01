@@ -1,8 +1,41 @@
 "use client";
-import { ListContents, SearchInput } from "./Components";
+import { ListContent, LoaderContent, SearchInput } from "./Components";
 import { Button, Grid, Typography } from "@mui/material";
+import { sendMessageToChatGPT } from "./api";
+import { ChangeEvent, useState } from "react";
+import { useAsyncCallback } from "react-async-hook";
 
 export default function Home() {
+  const [whatILike, setWhatILike] = useState("");
+  const [whatMyCoupleLike, setWhatMyCoupleLike] = useState("");
+  const sendMessageToChatGPTCallback = useAsyncCallback(sendMessageToChatGPT);
+
+  function handleChangeWhatILike(
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) {
+    const category = event.target.value;
+    if (!category.length) {
+      return;
+    }
+
+    setWhatILike(category);
+  }
+
+  function handleChangeWhatMyCoupleLike(
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) {
+    const category = event.target.value;
+    if (!category.length) {
+      return;
+    }
+
+    setWhatMyCoupleLike(category);
+  }
+
+  async function handleSendMessageToChatGPT() {
+    const message = `Eu gosto de séries e filmes do tipo de categoria: ${whatILike} e meu parceiro/parceira  gosta de ${whatMyCoupleLike}`;
+    await sendMessageToChatGPTCallback.execute(message);
+  }
   return (
     <Grid container spacing={1} alignItems="flex-end" padding={1}>
       <Grid
@@ -29,13 +62,21 @@ export default function Home() {
         </Typography>
       </Grid>
       <Grid item lg={6} xs={6} md={6}>
-        <SearchInput label="O que eu gosto" variant="standard" fullWidth />
+        <SearchInput
+          label="O que eu gosto"
+          variant="standard"
+          value={whatILike}
+          onChange={handleChangeWhatILike}
+          fullWidth
+        />
       </Grid>
 
       <Grid item lg={5} xs={6} md={5}>
         <SearchInput
           label="O que meu/minha parceiro(a) gosta"
           variant="standard"
+          value={whatMyCoupleLike}
+          onChange={handleChangeWhatMyCoupleLike}
           fullWidth
         />
       </Grid>
@@ -48,31 +89,46 @@ export default function Home() {
         alignItems="center"
         justifyContent="center"
       >
-        <Button variant="contained">Pesquisar</Button>
+        <Button variant="contained" onClick={handleSendMessageToChatGPT}>
+          Pesquisar
+        </Button>
       </Grid>
-
-      <Grid item xs={12} m={4}>
-        <Typography
-          variant="body2"
-          fontWeight="500"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          Com base no que vocês gostam aqui está uma lista de séries que vocês
-          podem assistir juntos(as):
-        </Typography>
-      </Grid>
-
-      <Grid
-        item
-        xs={12}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
+      <LoaderContent
+        loading={sendMessageToChatGPTCallback.loading}
+        error={sendMessageToChatGPTCallback.error}
+        customErrorMessage={
+          <Typography variant="body1">
+            Não foi possível carregar as recomendações. Tente novamente
+          </Typography>
+        }
+        result={sendMessageToChatGPTCallback.result}
       >
-        <ListContents items={["Game of thrones", "Romance", "Alem"]} />
-      </Grid>
+        {(result) => (
+          <>
+            <Grid item xs={12} m={4}>
+              <Typography
+                variant="body2"
+                fontWeight="500"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                Com base no que vocês gostam aqui está uma lista de séries que
+                vocês podem assistir juntos(as):
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <ListContent items={["Game of thrones", "Romance", "Alem"]} />
+            </Grid>
+          </>
+        )}
+      </LoaderContent>
     </Grid>
   );
 }
