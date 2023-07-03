@@ -2,14 +2,24 @@
 import { ListContent, LoaderContent, SearchInput } from "./Components";
 import { Button, Grid, Typography } from "@mui/material";
 import { sendMessageToChatGPT } from "./api";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useAsyncCallback } from "react-async-hook";
+import { logEvent, getAnalytics } from "firebase/analytics";
+import { app } from "./firebase.config";
 
 export default function Home() {
   const [whatILike, setWhatILike] = useState("");
   const [whatMyCoupleLike, setWhatMyCoupleLike] = useState("");
   const sendMessageToChatGPTCallback = useAsyncCallback(sendMessageToChatGPT);
-
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      logEvent(getAnalytics(app), "page_view", {
+        page_location: "/",
+        page_path: "/",
+        page_title: "Coupleflix",
+      });
+    }
+  }, []);
   function handleChangeWhatILike(
     event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) {
@@ -18,6 +28,7 @@ export default function Home() {
       return;
     }
 
+    logEventToFirebase(category);
     setWhatILike(category);
   }
 
@@ -29,6 +40,7 @@ export default function Home() {
       return;
     }
 
+    logEventToFirebase(category);
     setWhatMyCoupleLike(category);
   }
 
@@ -131,4 +143,12 @@ export default function Home() {
       </LoaderContent>
     </Grid>
   );
+}
+
+function logEventToFirebase(search: string) {
+  if (typeof window !== "undefined") {
+    logEvent(getAnalytics(app), "search", {
+      search_term: search,
+    });
+  }
 }
