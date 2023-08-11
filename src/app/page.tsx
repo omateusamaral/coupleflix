@@ -1,16 +1,18 @@
 "use client";
 import { ListContent, LoaderContent, SearchInput } from "./Components";
 import { Button, Grid, Typography } from "@mui/material";
-import { sendMessageToChatGPT } from "./api";
+import { Content, listMoviesAndFilm } from "./api";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { logEvent, getAnalytics } from "firebase/analytics";
 import { app } from "./firebase.config";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 
 export default function Home() {
   const [whatILike, setWhatILike] = useState("");
-  const [whatMyCoupleLike, setWhatMyCoupleLike] = useState("");
-  const sendMessageToChatGPTCallback = useAsyncCallback(sendMessageToChatGPT);
+  const [whatMyCoupleLike, setWhatMyCoupleLike] = useState<string>("");
+  const listMoviesAndFilmCallback = useAsyncCallback(listMoviesAndFilm);
   useEffect(() => {
     if (typeof window !== "undefined") {
       logEvent(getAnalytics(app), "page_view", {
@@ -33,20 +35,15 @@ export default function Home() {
   }
 
   function handleChangeWhatMyCoupleLike(
-    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    event: unknown,
+    values: { id: number; name: string }[]
   ) {
-    const category = event.target.value;
-    if (!category.length) {
-      return;
-    }
-
-    logEventToFirebase(category);
-    setWhatMyCoupleLike(category);
+    logEventToFirebase(values.toString());
+    setWhatMyCoupleLike(values.map((x) => x.id).join(","));
   }
 
-  async function handleSendMessageToChatGPT() {
-    const message = `Eu gosto de séries e filmes do tipo de categoria: ${whatILike} e meu parceiro/parceira  gosta de ${whatMyCoupleLike}`;
-    await sendMessageToChatGPTCallback.execute(message);
+  async function handleListContent() {
+    await listMoviesAndFilmCallback.execute(whatMyCoupleLike);
   }
   return (
     <Grid container spacing={1} alignItems="flex-end" padding={1}>
@@ -74,22 +71,16 @@ export default function Home() {
         </Typography>
       </Grid>
       <Grid item lg={6} xs={6} md={6}>
-        <SearchInput
+        {/* <SearchInput
           label="O que eu gosto"
-          variant="standard"
-          value={whatILike}
           onChange={handleChangeWhatILike}
-          fullWidth
-        />
+        /> */}
       </Grid>
 
       <Grid item lg={5} xs={6} md={5}>
         <SearchInput
           label="O que meu/minha parceiro(a) gosta"
-          variant="standard"
-          value={whatMyCoupleLike}
           onChange={handleChangeWhatMyCoupleLike}
-          fullWidth
         />
       </Grid>
       <Grid
@@ -101,21 +92,21 @@ export default function Home() {
         alignItems="center"
         justifyContent="center"
       >
-        <Button variant="contained" onClick={handleSendMessageToChatGPT}>
+        <Button variant="contained" onClick={handleListContent}>
           Pesquisar
         </Button>
       </Grid>
       <LoaderContent
-        loading={sendMessageToChatGPTCallback.loading}
-        error={sendMessageToChatGPTCallback.error}
+        loading={listMoviesAndFilmCallback.loading}
+        error={listMoviesAndFilmCallback.error}
         customErrorMessage={
           <Typography variant="body1">
             Não foi possível carregar as recomendações. Tente novamente
           </Typography>
         }
-        result={sendMessageToChatGPTCallback.result}
+        result={listMoviesAndFilmCallback.result}
       >
-        {(result) => (
+        {(result: Content[]) => (
           <>
             <Grid item xs={12} m={4}>
               <Typography
@@ -136,7 +127,32 @@ export default function Home() {
               alignItems="center"
               justifyContent="center"
             >
-              <ListContent items={["Game of thrones", "Romance", "Alem"]} />
+              <Button
+                variant="outlined"
+                endIcon={<ThumbUpOutlinedIcon />}
+                color="success"
+                sx={{
+                  mr: 1,
+                }}
+              >
+                Gostei
+              </Button>
+              <Button
+                variant="outlined"
+                endIcon={<ThumbDownOutlinedIcon />}
+                color="error"
+              >
+                Recomendar outros
+              </Button>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <ListContent items={result} />
             </Grid>
           </>
         )}

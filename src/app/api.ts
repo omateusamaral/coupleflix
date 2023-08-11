@@ -1,33 +1,57 @@
 import axios from "axios";
 
-export async function sendMessageToChatGPT(message: string): Promise<string> {
+const LANGUAGE = "pt-BR";
+export async function listMoviesAndFilm(
+  genresILike: string
+): Promise<Content[]> {
   try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content:
-              "Você é um assistente que recomenda filmes e séries, recomende até 20 séries ou filmes com base nesses gostos.",
-          },
-          { role: "user", content: message },
-        ],
-        temperature: 0.5,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_CHAT_GPT_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresILike}&language=${LANGUAGE}`
     );
 
-    const reply = response.data.choices[0].message.content;
-
-    return reply;
+    return response.data.results;
   } catch (error) {
     throw error;
   }
+}
+
+export async function listMoviesGenres() {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${LANGUAGE}`
+    );
+
+    return response.data.genres;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function listTvSeriesGenres() {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${LANGUAGE}`
+    );
+
+    return response.data.genres;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export interface Content {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids?: number[] | null;
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
 }

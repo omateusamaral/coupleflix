@@ -1,12 +1,13 @@
 import { CircularProgress, Grid, Typography } from "@mui/material";
 import { ReactNode } from "react";
+import { Content } from "../api";
 
 interface LoaderContentProps {
   loading: boolean;
-  children: (result: string) => ReactNode;
+  children: (result: Content[]) => ReactNode;
   error?: Error;
   customErrorMessage?: ReactNode;
-  result?: string;
+  result?: Content[];
 }
 
 export function LoaderContent({
