@@ -1,12 +1,18 @@
 import axios from "axios";
 
 const LANGUAGE = "pt-BR";
+export type GenreType = {
+  id: number;
+  name: string;
+};
 export async function listMoviesAndFilm(
-  genresILike: string
+  genresIds: string,
+  page = 1
 ): Promise<Content[]> {
+  console.log(genresIds);
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresILike}&language=${LANGUAGE}`
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${LANGUAGE}`
     );
 
     return response.data.results;

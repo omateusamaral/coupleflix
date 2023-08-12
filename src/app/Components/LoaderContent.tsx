@@ -50,7 +50,7 @@ export function LoaderContent({
     }
 
     return (
-      <Grid container spacing={1} p={4}>
+      <Grid container spacing={2} p={4}>
         <Grid
           item
           xs={12}
@@ -65,7 +65,21 @@ export function LoaderContent({
   }
 
   if (!result) {
-    return <></>;
+    return (
+      <Grid container spacing={2} p={4}>
+        <Grid
+          item
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant="body1">
+            Aqui vai aparecer filmes e séries com base nos seus gostos 😀
+          </Typography>
+        </Grid>
+      </Grid>
+    );
   }
   return <>{children(result)}</>;
 }

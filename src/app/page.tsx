@@ -1,17 +1,16 @@
 "use client";
 import { ListContent, LoaderContent, SearchInput } from "./Components";
 import { Button, Grid, Typography } from "@mui/material";
-import { Content, listMoviesAndFilm } from "./api";
-import { ChangeEvent, useEffect, useState } from "react";
+import { Content, GenreType, listMoviesAndFilm } from "./api";
+import { useEffect, useState } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { logEvent, getAnalytics } from "firebase/analytics";
 import { app } from "./firebase.config";
-import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
-import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 
 export default function Home() {
-  const [whatILike, setWhatILike] = useState("");
-  const [whatMyCoupleLike, setWhatMyCoupleLike] = useState<string>("");
+  const [whatILike, setWhatILike] = useState<GenreType[]>([]);
+  const [whatMyCoupleLike, setWhatMyCoupleLike] = useState<GenreType[]>([]);
+  const [page, setPage] = useState<number>(1);
   const listMoviesAndFilmCallback = useAsyncCallback(listMoviesAndFilm);
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -22,29 +21,38 @@ export default function Home() {
       });
     }
   }, []);
-  function handleChangeWhatILike(
-    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) {
-    const category = event.target.value;
-    if (!category.length) {
-      return;
+  function handleChangeWhatILike(event: unknown, values: GenreType[]) {
+    handleCoupleLikes("me", values);
+  }
+
+  function handleChangeWhatMyCoupleLike(event: unknown, values: GenreType[]) {
+    logSearchToFirebase(values.toString());
+    handleCoupleLikes("my-couple", values);
+  }
+
+  function handleCoupleLikes(person: "me" | "my-couple", values: GenreType[]) {
+    logSearchToFirebase(values.toString());
+    if (person === "me") {
+      setWhatILike(values);
+    } else {
+      setWhatMyCoupleLike(values);
     }
-
-    logEventToFirebase(category);
-    setWhatILike(category);
   }
+  const handleListContent = async () => {
+    const genresIds = whatILike
+      .filter((x) => !whatMyCoupleLike.includes(x))
+      .map((y) => y.id)
+      .join(",");
+    await listMoviesAndFilmCallback.execute(genresIds, page);
+  };
 
-  function handleChangeWhatMyCoupleLike(
-    event: unknown,
-    values: { id: number; name: string }[]
-  ) {
-    logEventToFirebase(values.toString());
-    setWhatMyCoupleLike(values.map((x) => x.id).join(","));
-  }
+  useEffect(() => {
+    if (page > 1) {
+      handleListContent();
+    }
+  }, [page]);
 
-  async function handleListContent() {
-    await listMoviesAndFilmCallback.execute(whatMyCoupleLike);
-  }
+  console.log(page);
   return (
     <Grid container spacing={1} alignItems="flex-end" padding={1}>
       <Grid
@@ -71,16 +79,18 @@ export default function Home() {
         </Typography>
       </Grid>
       <Grid item lg={6} xs={6} md={6}>
-        {/* <SearchInput
+        <SearchInput
           label="O que eu gosto"
           onChange={handleChangeWhatILike}
-        /> */}
+          value={whatILike}
+        />
       </Grid>
 
       <Grid item lg={5} xs={6} md={5}>
         <SearchInput
           label="O que meu/minha parceiro(a) gosta"
           onChange={handleChangeWhatMyCoupleLike}
+          value={whatMyCoupleLike}
         />
       </Grid>
       <Grid
@@ -96,6 +106,7 @@ export default function Home() {
           Pesquisar
         </Button>
       </Grid>
+
       <LoaderContent
         loading={listMoviesAndFilmCallback.loading}
         error={listMoviesAndFilmCallback.error}
@@ -107,61 +118,14 @@ export default function Home() {
         result={listMoviesAndFilmCallback.result}
       >
         {(result: Content[]) => (
-          <>
-            <Grid item xs={12} m={4}>
-              <Typography
-                variant="body2"
-                fontWeight="500"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                Com base no que vocês gostam aqui está uma lista de séries que
-                vocês podem assistir juntos(as):
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Button
-                variant="outlined"
-                endIcon={<ThumbUpOutlinedIcon />}
-                color="success"
-                sx={{
-                  mr: 1,
-                }}
-              >
-                Gostei
-              </Button>
-              <Button
-                variant="outlined"
-                endIcon={<ThumbDownOutlinedIcon />}
-                color="error"
-              >
-                Recomendar outros
-              </Button>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <ListContent items={result} />
-            </Grid>
-          </>
+          <ListContent handlePage={setPage} page={page} items={result} />
         )}
       </LoaderContent>
     </Grid>
   );
 }
 
-function logEventToFirebase(search: string) {
+function logSearchToFirebase(search: string) {
   if (typeof window !== "undefined") {
     logEvent(getAnalytics(app), "search", {
       search_term: search,

@@ -1,23 +1,20 @@
-import {
-  Autocomplete,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from "@mui/material";
-import { listMoviesGenres, listTvSeriesGenres } from "../api";
+import { Autocomplete, TextField, Typography } from "@mui/material";
+import { GenreType, listMoviesGenres, listTvSeriesGenres } from "../api";
 import { useAsyncCallback } from "react-async-hook";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect } from "react";
 interface SearchInputProps {
   label: string;
-  onChange: (event: unknown, values: { id: number; name: string }[]) => void;
+  onChange: (event: unknown, values: GenreType[]) => void;
+  value: GenreType[];
 }
-export function SearchInput({ label, onChange }: SearchInputProps) {
+export function SearchInput({ label, onChange, value }: SearchInputProps) {
   const listMoviesGenresCallback = useAsyncCallback(listMoviesGenres);
   const listTvSeriesGenresCallback = useAsyncCallback(listTvSeriesGenres);
 
   useEffect(() => {
     listMoviesGenresCallback.execute();
     listTvSeriesGenresCallback.execute();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Suspense fallback={<Typography>tente novamente</Typography>}>
@@ -26,7 +23,8 @@ export function SearchInput({ label, onChange }: SearchInputProps) {
         disablePortal
         options={listMoviesGenresCallback.result ?? []}
         onChange={onChange}
-        getOptionLabel={(option: { id: number; name: string }) => option.name}
+        value={value}
+        getOptionLabel={(option: GenreType) => option.name}
         renderInput={(params) => (
           <TextField {...params} variant="standard" fullWidth label={label} />
         )}
