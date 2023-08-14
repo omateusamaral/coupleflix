@@ -20,7 +20,7 @@ export async function listMoviesAndFilm(
   }
 }
 
-export async function listMoviesGenres() {
+export async function listMoviesGenres(): Promise<GenreType[]> {
   try {
     const response = await axios.get(
       `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${LANGUAGE}`
@@ -32,7 +32,7 @@ export async function listMoviesGenres() {
   }
 }
 
-export async function listTvSeriesGenres() {
+export async function listTvSeriesGenres(): Promise<GenreType[]> {
   try {
     const response = await axios.get(
       `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${LANGUAGE}`
