@@ -17,6 +17,13 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <link rel="icon" href="/icon.png" />
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4512256824642513"
+          crossOrigin="anonymous"
+        ></script>
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );

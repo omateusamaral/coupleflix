@@ -45,7 +45,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  console.log("aaaa", listMoviesCallback.status, listSeriesCallback.status);
   return (
     <Grid container spacing={2} padding={1}>
       <Header
