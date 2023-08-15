@@ -3,7 +3,7 @@ import { MetadataRoute } from "next";
 export default function siteMap(): MetadataRoute.Sitemap {
   return [
     {
-      url: "http://localhost:3000/",
+      url: "https://coupleflix.com.br/",
       lastModified: new Date(),
     },
 
