@@ -1,11 +1,6 @@
-import { List, Typography, Grid, Button, Alert, Snackbar } from "@mui/material";
+import { List, Typography, Grid } from "@mui/material";
 import { Content } from "../api";
 
-import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
-import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
-import { useState } from "react";
-import { getAnalytics, logEvent } from "firebase/analytics";
-import { app } from "../firebase.config";
 import { CardContent } from "./CardContent";
 
 interface ListContentProps {
@@ -20,32 +15,6 @@ export function ListContent({
   page,
   title,
 }: ListContentProps) {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const handleOpenSnackbar = () => {
-    setOpenSnackbar(true);
-
-    if (typeof window !== "undefined") {
-      logEvent(getAnalytics(app), "view_search_results", {
-        search_term: "like the results",
-      });
-    }
-  };
-
-  const handleCloseSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnackbar(false);
-  };
-
-  function handleUpdatePage() {
-    handlePage(page + 1);
-  }
   if (items.length === 0) {
     return (
       <Grid
@@ -74,37 +43,11 @@ export function ListContent({
           alignItems="center"
           justifyContent="center"
         >
-          Com base no que vocês gostam aqui está uma lista de séries que vocês
-          podem assistir juntos(as):
+          Com base no que vocês gostam aqui está uma lista de filmes e séries
+          que vocês podem assistir juntos(as):
         </Typography>
       </Grid>
-      <Grid
-        item
-        xs={12}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Button
-          variant="outlined"
-          endIcon={<ThumbUpOutlinedIcon />}
-          color="success"
-          sx={{
-            mr: 1,
-          }}
-          onClick={handleOpenSnackbar}
-        >
-          Gostei
-        </Button>
-        <Button
-          variant="outlined"
-          endIcon={<ThumbDownOutlinedIcon />}
-          color="error"
-          onClick={handleUpdatePage}
-        >
-          Recomendar outros
-        </Button>
-      </Grid>
+
       <Grid item xs={12}>
         <Typography variant="h5" fontWeight="700">
           {title}
@@ -125,21 +68,6 @@ export function ListContent({
           <CardContent item={item} key={item.id} />
         ))}
       </List>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ horizontal: "center", vertical: "top" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-          closeText="fechar"
-        >
-          Obrigado pelo feedback
-        </Alert>
-      </Snackbar>
     </>
   );
 }

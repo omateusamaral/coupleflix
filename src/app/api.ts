@@ -66,6 +66,8 @@ export interface Content {
   id: number;
   original_language: string;
   original_title: string;
+  name?: string;
+  first_air_date?: string;
   overview: string;
   popularity: number;
   poster_path: string;

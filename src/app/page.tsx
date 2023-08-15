@@ -1,5 +1,10 @@
 "use client";
-import { Header, ListContent, LoaderContent } from "./Components";
+import {
+  FeedbackButton,
+  Header,
+  ListContent,
+  LoaderContent,
+} from "./Components";
 import { Grid, Typography } from "@mui/material";
 import { Content, GenreType, listMovies, listSeries } from "./api";
 import { useEffect, useState } from "react";
@@ -76,12 +81,15 @@ export default function Home() {
         result={listMoviesCallback.result}
       >
         {(result: Content[]) => (
-          <ListContent
-            handlePage={setPage}
-            page={page}
-            title="Filmes"
-            items={result}
-          />
+          <>
+            <FeedbackButton onPage={setPage} page={page} />
+            <ListContent
+              handlePage={setPage}
+              page={page}
+              title="Filmes"
+              items={result}
+            />
+          </>
         )}
       </LoaderContent>
 
@@ -96,12 +104,16 @@ export default function Home() {
         result={listSeriesCallback.result}
       >
         {(result: Content[]) => (
-          <ListContent
-            handlePage={setPage}
-            page={page}
-            title="Séries"
-            items={result}
-          />
+          <>
+            <ListContent
+              handlePage={setPage}
+              page={page}
+              title="Séries"
+              items={result}
+            />
+
+            <FeedbackButton onPage={setPage} page={page} />
+          </>
         )}
       </LoaderContent>
     </Grid>

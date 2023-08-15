@@ -25,7 +25,7 @@ export function CardContent({ item }: CardContentProps) {
             fontWeight="500"
             component="p"
           >
-            {item.title}
+            {item.title ?? item.name}
           </Typography>
         }
         subheader={
@@ -55,8 +55,10 @@ export function CardContent({ item }: CardContentProps) {
 
       <MUICardContent>
         <Typography variant="body1" fontWeight="600" py={2}>
-          Data de lançamento:
-          {DateTime.fromISO(item.release_date).toFormat("dd/MM/yyyy")}
+          Data de lançamento:{" "}
+          {DateTime.fromISO(item.release_date ?? item.first_air_date).toFormat(
+            "dd/MM/yyyy"
+          )}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
