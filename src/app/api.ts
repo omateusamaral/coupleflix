@@ -5,13 +5,28 @@ export type GenreType = {
   id: number;
   name: string;
 };
-export async function listMoviesAndFilm(
+export async function listMovies(
   genresIds: string,
   page = 1
 ): Promise<Content[]> {
   try {
     const response = await axios.get(
       `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${LANGUAGE}`
+    );
+
+    return response.data.results;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function listSeries(
+  genresIds: string,
+  page = 1
+): Promise<Content[]> {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${LANGUAGE}`
     );
 
     return response.data.results;

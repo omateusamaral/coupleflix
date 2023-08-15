@@ -1,33 +1,25 @@
-import {
-  List,
-  Typography,
-  Stack,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  CardActions,
-  Rating,
-  Grid,
-  Button,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { List, Typography, Grid, Button, Alert, Snackbar } from "@mui/material";
 import { Content } from "../api";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 import { useState } from "react";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { app } from "../firebase.config";
+import { CardContent } from "./CardContent";
 
 interface ListContentProps {
   items: Content[];
   handlePage: (page: number) => void;
   page: number;
+  title: string;
 }
-export function ListContent({ items, handlePage, page }: ListContentProps) {
+export function ListContent({
+  items,
+  handlePage,
+  page,
+  title,
+}: ListContentProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleOpenSnackbar = () => {
@@ -65,15 +57,15 @@ export function ListContent({ items, handlePage, page }: ListContentProps) {
       >
         <Grid item xs={12}>
           <Typography variant="body1" textAlign="center">
-            Infelizmente não conseguimos encontrar nenhum filme/série com base
-            nos seus gostos 🥹. tente novamente
+            Infelizmente não conseguimos encontrar conteúdo com base nos seus
+            gostos 🥹. tente novamente
           </Typography>
         </Grid>
       </Grid>
     );
   }
   return (
-    <Grid container spacing={2}>
+    <>
       <Grid item xs={12} m={4}>
         <Typography
           variant="body2"
@@ -113,56 +105,24 @@ export function ListContent({ items, handlePage, page }: ListContentProps) {
           Recomendar outros
         </Button>
       </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h5" fontWeight="700">
+          {title}
+        </Typography>
+      </Grid>
       <List
         dense
         component="div"
-        style={{
+        sx={{
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
           gap: "16px",
+          paddingLeft: "5px",
         }}
       >
         {items.map((item) => (
-          <Card sx={{ maxWidth: 300 }} key={item.id} variant="elevation">
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                image={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt={item.title}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="p">
-                  {item.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.overview}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Stack direction="column">
-                <Rating
-                  name="read-only"
-                  precision={0.5}
-                  icon={<FavoriteIcon fontSize="inherit" />}
-                  emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
-                  size="small"
-                  sx={{
-                    "& .MuiRating-iconFilled": {
-                      color: "#ff6d75",
-                    },
-                  }}
-                  value={item.vote_average}
-                  max={10}
-                  readOnly
-                />
-                <Typography variant="body2">
-                  Data de lançamento: {item.release_date}
-                </Typography>
-              </Stack>
-            </CardActions>
-          </Card>
+          <CardContent item={item} key={item.id} />
         ))}
       </List>
       <Snackbar
@@ -180,6 +140,6 @@ export function ListContent({ items, handlePage, page }: ListContentProps) {
           Obrigado pelo feedback
         </Alert>
       </Snackbar>
-    </Grid>
+    </>
   );
 }
