@@ -7,6 +7,15 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Coupleflix - Recommendações de filmes e séries",
   description: "Recommendações de filmes e séries",
+  category: "recommendations of Films, tv series",
+  authors: {
+    name: "Mateus Amaral",
+    url: "https://mateusamaral.dev.br/",
+  },
+  twitter: {
+    card: "summary",
+    title: "Coupleflix - Recommendações de filmes e séries",
+  },
 };
 
 export default function RootLayout({
@@ -17,13 +26,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <link rel="icon" href="/icon.png" />
-      <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4512256824642513"
-          crossOrigin="anonymous"
-        ></script>
-      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
