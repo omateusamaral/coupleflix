@@ -1,4 +1,4 @@
-import { Grid, Button, Alert, Snackbar } from "@mui/material";
+import { Grid, Button, Alert, Snackbar, Typography } from "@mui/material";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 import { useState } from "react";
@@ -53,7 +53,9 @@ export function FeedbackButton({ onPage, page }: FeedbackButtonProps) {
         }}
         onClick={handleOpenSnackbar}
       >
-        Gostei
+        <Typography sx={{ typography: { sm: "body1", xs: "body2" } }}>
+          Gostei
+        </Typography>
       </Button>
       <Button
         variant="outlined"
@@ -61,7 +63,9 @@ export function FeedbackButton({ onPage, page }: FeedbackButtonProps) {
         color="error"
         onClick={handleUpdatePage}
       >
-        Recomendar outros
+        <Typography sx={{ typography: { sm: "body1", xs: "body2" } }}>
+          Recomendar outros
+        </Typography>
       </Button>
       <Snackbar
         open={openSnackbar}

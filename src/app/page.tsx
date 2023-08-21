@@ -82,6 +82,18 @@ export default function Home() {
         {(result: Content[]) => (
           <>
             <FeedbackButton onPage={setPage} page={page} />
+            <Grid item xs={12} m={4}>
+              <Typography
+                variant="body2"
+                fontWeight="500"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                Com base no que vocês gostam aqui está uma lista de filmes e
+                séries que vocês podem assistir juntos(as):
+              </Typography>
+            </Grid>
             <ListContent
               handlePage={setPage}
               page={page}

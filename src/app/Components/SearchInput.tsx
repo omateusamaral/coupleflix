@@ -1,9 +1,9 @@
 import { Autocomplete, TextField, Typography } from "@mui/material";
 import { GenreType, listMoviesGenres, listTvSeriesGenres } from "../api";
 import { useAsyncCallback } from "react-async-hook";
-import { Suspense, useEffect } from "react";
+import { ReactNode, Suspense, useEffect } from "react";
 interface SearchInputProps {
-  label: string;
+  label: string | ReactNode;
   onChange: (event: unknown, values: GenreType[]) => void;
   value: GenreType[];
 }

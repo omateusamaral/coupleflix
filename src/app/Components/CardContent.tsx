@@ -16,7 +16,7 @@ interface CardContentProps {
 }
 export function CardContent({ item }: CardContentProps) {
   return (
-    <Card sx={{ maxWidth: 300 }} key={item.id} variant="elevation">
+    <Card sx={{ width: 340, ml: 2 }} key={item.id} variant="elevation">
       <CardHeader
         title={
           <Typography

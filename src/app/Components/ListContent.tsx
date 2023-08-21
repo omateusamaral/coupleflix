@@ -35,19 +35,6 @@ export function ListContent({
   }
   return (
     <>
-      <Grid item xs={12} m={4}>
-        <Typography
-          variant="body2"
-          fontWeight="500"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          Com base no que vocês gostam aqui está uma lista de filmes e séries
-          que vocês podem assistir juntos(as):
-        </Typography>
-      </Grid>
-
       <Grid item xs={12}>
         <Typography variant="h5" fontWeight="700">
           {title}

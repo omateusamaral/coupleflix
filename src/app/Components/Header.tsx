@@ -62,7 +62,11 @@ export function Header({
       </Grid>
       <Grid item lg={6} xs={6} md={6}>
         <SearchInput
-          label="O que eu gosto"
+          label={
+            <Typography sx={{ typography: { sm: "body1", xs: "body2" } }}>
+              O que eu gosto
+            </Typography>
+          }
           onChange={handleChangeWhatILike}
           value={whatILike}
         />
@@ -70,7 +74,11 @@ export function Header({
 
       <Grid item lg={5} xs={6} md={5}>
         <SearchInput
-          label="O que meu/minha parceiro(a) gosta"
+          label={
+            <Typography sx={{ typography: { sm: "body1", xs: "caption" } }}>
+              O que meu/minha parceiro(a) gosta
+            </Typography>
+          }
           onChange={handleChangeWhatMyCoupleLike}
           value={whatMyCoupleLike}
         />
