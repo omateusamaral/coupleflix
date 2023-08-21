@@ -1,17 +1,18 @@
 import axios from "axios";
+import i18next from "i18next";
 
-const LANGUAGE = "pt-BR";
 export type GenreType = {
   id: number;
   name: string;
 };
 export async function listMovies(
   genresIds: string,
+  language: string,
   page = 1
 ): Promise<Content[]> {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${LANGUAGE}`
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${language}`
     );
 
     return response.data.results;
@@ -22,11 +23,12 @@ export async function listMovies(
 
 export async function listSeries(
   genresIds: string,
+  language: string,
   page = 1
 ): Promise<Content[]> {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${LANGUAGE}`
+      `https://api.themoviedb.org/3/discover/tv?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&with_genres=${genresIds}&page=${page}&language=${language}`
     );
 
     return response.data.results;
@@ -35,10 +37,10 @@ export async function listSeries(
   }
 }
 
-export async function listMoviesGenres(): Promise<GenreType[]> {
+export async function listMoviesGenres(language: string): Promise<GenreType[]> {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${LANGUAGE}`
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${language}`
     );
 
     return response.data.genres;
@@ -47,10 +49,12 @@ export async function listMoviesGenres(): Promise<GenreType[]> {
   }
 }
 
-export async function listTvSeriesGenres(): Promise<GenreType[]> {
+export async function listTvSeriesGenres(
+  language: string
+): Promise<GenreType[]> {
   try {
     const response = await axios.get(
-      `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${LANGUAGE}`
+      `https://api.themoviedb.org/3/genre/tv/list?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=${language}`
     );
 
     return response.data.genres;

@@ -3,6 +3,9 @@ import { SearchInput } from "./SearchInput";
 import { GenreType } from "../api";
 import { logEvent, getAnalytics } from "firebase/analytics";
 import { app } from "../firebase.config";
+import { Trans, useTranslation } from "react-i18next";
+import i18next from "i18next";
+import Image from "next/image";
 
 interface HeaderProps {
   onChangeWhaILike: (values: GenreType[]) => void;
@@ -18,6 +21,7 @@ export function Header({
   whatILike,
   whatMyCoupleLike,
 }: HeaderProps) {
+  const { t } = useTranslation();
   function handleChangeWhatILike(event: unknown, values: GenreType[]) {
     handleCoupleLikes("me", values);
   }
@@ -35,8 +39,29 @@ export function Header({
       onChangeWhaMyCoupleLike(values);
     }
   }
+  const changeLanguage = (language: string) => {
+    i18next.changeLanguage(language);
+  };
   return (
     <Grid container spacing={2} alignItems="flex-end" padding={1}>
+      <Grid item xs={6}>
+        <Button onClick={() => changeLanguage("pt-BR")}>
+          <Image
+            src="https://cdn-icons-png.flaticon.com/128/7826/7826359.png"
+            alt="flag-image"
+            width={20}
+            height={20}
+          />
+        </Button>
+        <Button onClick={() => changeLanguage("en")}>
+          <Image
+            src="https://cdn-icons-png.flaticon.com/128/3909/3909383.png"
+            alt="flag-image"
+            width={20}
+            height={20}
+          />
+        </Button>
+      </Grid>
       <Grid
         item
         xs={12}
@@ -57,14 +82,14 @@ export function Header({
         justifyContent="center"
       >
         <Typography variant="body1">
-          Que categoria de séries/filmes vocês gostam?
+          <Trans t={t}>Que categoria de séries/filmes vocês gostam?</Trans>
         </Typography>
       </Grid>
       <Grid item lg={6} xs={6} md={6}>
         <SearchInput
           label={
             <Typography sx={{ typography: { sm: "body1", xs: "body2" } }}>
-              O que eu gosto
+              <Trans t={t}>O que eu gosto</Trans>
             </Typography>
           }
           onChange={handleChangeWhatILike}
@@ -76,7 +101,7 @@ export function Header({
         <SearchInput
           label={
             <Typography sx={{ typography: { sm: "body1", xs: "caption" } }}>
-              O que meu/minha parceiro(a) gosta
+              <Trans t={t}>O que meu/minha parceiro(a) gosta</Trans>
             </Typography>
           }
           onChange={handleChangeWhatMyCoupleLike}
@@ -97,7 +122,7 @@ export function Header({
           disabled={whatILike.length === 0 || whatMyCoupleLike.length === 0}
           onClick={onListContent}
         >
-          Pesquisar
+          <Trans t={t}>Pesquisar</Trans>
         </Button>
       </Grid>
     </Grid>

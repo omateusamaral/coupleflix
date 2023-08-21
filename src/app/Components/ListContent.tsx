@@ -5,14 +5,12 @@ import { CardContent } from "./CardContent";
 
 interface ListContentProps {
   items: Content[];
-  handlePage: (page: number) => void;
-  page: number;
+
   title: string;
 }
 export function ListContent({
   items,
-  handlePage,
-  page,
+
   title,
 }: ListContentProps) {
   if (items.length === 0) {

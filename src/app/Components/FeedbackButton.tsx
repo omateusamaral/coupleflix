@@ -4,6 +4,7 @@ import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 import { useState } from "react";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { app } from "../firebase.config";
+import { Trans, useTranslation } from "react-i18next";
 
 interface FeedbackButtonProps {
   onPage: (page: number) => void;
@@ -11,6 +12,7 @@ interface FeedbackButtonProps {
 }
 export function FeedbackButton({ onPage, page }: FeedbackButtonProps) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const { t } = useTranslation();
 
   const handleOpenSnackbar = () => {
     setOpenSnackbar(true);
@@ -54,7 +56,7 @@ export function FeedbackButton({ onPage, page }: FeedbackButtonProps) {
         onClick={handleOpenSnackbar}
       >
         <Typography sx={{ typography: { sm: "body1", xs: "body2" } }}>
-          Gostei
+          <Trans t={t}>Gostei</Trans>
         </Typography>
       </Button>
       <Button
@@ -64,7 +66,7 @@ export function FeedbackButton({ onPage, page }: FeedbackButtonProps) {
         onClick={handleUpdatePage}
       >
         <Typography sx={{ typography: { sm: "body1", xs: "body2" } }}>
-          Recomendar outros
+          <Trans t={t}>Recomendar outros</Trans>
         </Typography>
       </Button>
       <Snackbar
@@ -79,7 +81,7 @@ export function FeedbackButton({ onPage, page }: FeedbackButtonProps) {
           sx={{ width: "100%" }}
           closeText="fechar"
         >
-          Obrigado pelo feedback
+          <Trans t={t}>Obrigado pelo feedback</Trans>
         </Alert>
       </Snackbar>
     </Grid>
