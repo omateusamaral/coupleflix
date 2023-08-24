@@ -11,14 +11,29 @@ import { useEffect, useState } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { logEvent, getAnalytics } from "firebase/analytics";
 import { app } from "./firebase.config";
+import i18next from "i18next";
+import { Trans, initReactI18next, useTranslation } from "react-i18next";
+import { resources } from "./i18n";
 
+i18next.use(initReactI18next).init({
+  resources: resources,
+  fallbackLng: "pt-BR",
+  interpolation: {
+    escapeValue: false,
+  },
+  react: {
+    defaultTransParent: "span",
+  },
+});
 export default function Home() {
   const [whatILike, setWhatILike] = useState<GenreType[]>([]);
   const [whatMyCoupleLike, setWhatMyCoupleLike] = useState<GenreType[]>([]);
   const [page, setPage] = useState<number>(1);
   const listMoviesCallback = useAsyncCallback(listMovies);
   const listSeriesCallback = useAsyncCallback(listSeries);
+  const { t } = useTranslation();
 
+  const LANGUAGE = i18next.language;
   useEffect(() => {
     if (typeof window !== "undefined") {
       logEvent(getAnalytics(app), "page_view", {
@@ -34,8 +49,8 @@ export default function Home() {
       .filter((x) => !whatMyCoupleLike.includes(x))
       .map((y) => y.id)
       .join(",");
-    await listMoviesCallback.execute(genresIds, page);
-    await listSeriesCallback.execute(genresIds, page);
+    await listMoviesCallback.execute(genresIds, LANGUAGE, page);
+    await listSeriesCallback.execute(genresIds, LANGUAGE, page);
   };
 
   useEffect(() => {
@@ -65,7 +80,9 @@ export default function Home() {
           alignItems="center"
         >
           <Typography variant="body1">
-            Aqui vai aparecer filmes e séries com base nos seus gostos 😀
+            <Trans t={t}>
+              Aqui vai aparecer filmes e séries com base nos seus gostos 😀
+            </Trans>
           </Typography>
         </Grid>
       ) : null}
@@ -74,7 +91,9 @@ export default function Home() {
         error={listMoviesCallback.error}
         customErrorMessage={
           <Typography variant="body1">
-            Não foi possível carregar os filmes. Tente novamente
+            <Trans t={t}>
+              Não foi possível carregar os filmes. Tente novamente
+            </Trans>
           </Typography>
         }
         result={listMoviesCallback.result}
@@ -90,16 +109,13 @@ export default function Home() {
                 alignItems="center"
                 justifyContent="center"
               >
-                Com base no que vocês gostam aqui está uma lista de filmes e
-                séries que vocês podem assistir juntos(as):
+                <Trans t={t}>
+                  Com base no que vocês gostam aqui está uma lista de filmes e
+                  séries que vocês podem assistir juntos(as):
+                </Trans>
               </Typography>
             </Grid>
-            <ListContent
-              handlePage={setPage}
-              page={page}
-              title="Filmes"
-              items={result}
-            />
+            <ListContent title="Filmes" items={result} />
           </>
         )}
       </LoaderContent>
@@ -109,19 +125,16 @@ export default function Home() {
         error={listSeriesCallback.error}
         customErrorMessage={
           <Typography variant="body1">
-            Não foi possível carregar as séries. Tente novamente
+            <Trans t={t}>
+              Não foi possível carregar as séries. Tente novamente
+            </Trans>
           </Typography>
         }
         result={listSeriesCallback.result}
       >
         {(result: Content[]) => (
           <>
-            <ListContent
-              handlePage={setPage}
-              page={page}
-              title="Séries"
-              items={result}
-            />
+            <ListContent title="Séries" items={result} />
 
             <FeedbackButton onPage={setPage} page={page} />
           </>

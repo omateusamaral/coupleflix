@@ -2,19 +2,20 @@ import { List, Typography, Grid } from "@mui/material";
 import { Content } from "../api";
 
 import { CardContent } from "./CardContent";
+import { useTranslation } from "react-i18next";
 
 interface ListContentProps {
   items: Content[];
-  handlePage: (page: number) => void;
-  page: number;
+
   title: string;
 }
 export function ListContent({
   items,
-  handlePage,
-  page,
+
   title,
 }: ListContentProps) {
+  const { t } = useTranslation();
+
   if (items.length === 0) {
     return (
       <Grid
@@ -37,7 +38,7 @@ export function ListContent({
     <>
       <Grid item xs={12}>
         <Typography variant="h5" fontWeight="700">
-          {title}
+          {t(title)}
         </Typography>
       </Grid>
       <List
