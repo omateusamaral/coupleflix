@@ -16,6 +16,8 @@ const translations = {
     "O que eu gosto": "What I like",
     "O que meu/minha parceiro(a) gosta": "What my partner likes",
     Pesquisar: "Search",
+    Filmes: "Movies",
+    Séries: "TV Shows",
   },
 };
 

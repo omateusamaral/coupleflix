@@ -44,7 +44,7 @@ export function Header({
   };
   return (
     <Grid container spacing={2} alignItems="flex-end" padding={1}>
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <Button onClick={() => changeLanguage("pt-BR")}>
           <Image
             src="https://cdn-icons-png.flaticon.com/128/7826/7826359.png"
